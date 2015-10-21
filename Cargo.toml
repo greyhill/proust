@@ -1,0 +1,10 @@
+[package]
+name = "prust"
+version = "0.0.1"
+authors = ["Madison McGaffin <greyhill@gmail.com>"]
+
+[lib]
+name = 'prust'
+
+[dependencies.libc]
+libc = "*"
