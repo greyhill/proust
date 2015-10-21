@@ -265,7 +265,7 @@ impl CommandQueue {
         }
         let event = Event{id: event_id};
 
-        kernel.register_run(event.clone());
+        try!(kernel.register_run(event.clone()));
         Ok(event)
     }
 }
