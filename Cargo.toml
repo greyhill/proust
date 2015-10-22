@@ -1,10 +1,10 @@
 [package]
-name = "prust"
+name = "proust"
 version = "0.0.1"
 authors = ["Madison McGaffin <greyhill@gmail.com>"]
 
 [lib]
-name = 'prust'
+name = 'proust'
 
 [dependencies.libc]
 libc = "*"
