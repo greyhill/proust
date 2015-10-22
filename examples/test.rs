@@ -1,5 +1,5 @@
-extern crate prust;
-use self::prust::*;
+extern crate proust;
+use self::proust::*;
 
 fn go() -> Result<(), Error> {
     let platforms = try!(Platform::platforms());
