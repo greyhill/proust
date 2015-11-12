@@ -24,8 +24,9 @@ impl Program {
     pub fn new_from_source<T: AsRef<str>>(ctx: Context, 
                                            lines: &[T]) -> Result<Program, Error> {
         let num_lines = lines.len() as u32;
+        let cstrings: Vec<CString> = lines.iter().map(|l| CString::new(l.as_ref()).unwrap()).collect();
         let lengths: Vec<size_t> = lines.iter().map(|l| l.as_ref().len() as size_t).collect();
-        let lines_raw: Vec<&str> = lines.iter().map(|l| l.as_ref()).collect();
+        let lines_raw: Vec<*const libc::c_char> = cstrings.iter().map(|l| l.as_ptr()).collect();
         let id = unsafe {
             let mut err = 0;
             let id = ll::clCreateProgramWithSource(ctx.id,
