@@ -19,7 +19,7 @@ impl Context {
             let mut err: i32 = 0;
             let props: Vec<usize> = vec!(
                              0x1084, 
-                             transmute(try!(devices[0].platform())));
+                             transmute(try!(devices[0].platform()).id));
             let id = ll::clCreateContext(transmute(&props[0]),
                                          num_devices,
                                          &device_ids[0],

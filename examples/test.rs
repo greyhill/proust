@@ -40,7 +40,7 @@ fn go() -> Result<(), Error> {
 
         let mut k = try!(program.create_kernel("zero"));
         try!(k.bind_mut(0, &mut buf));
-        try!(queues[1].run(&mut k, (1,1,1), (2,1,1)));
+        try!(queues[0].run(&mut k, (1,1,1), (2,1,1)));
         try!(queues[0].read_buffer(&buf, &mut buf_host[..]));
         println!("{:?}", buf_host);
     }
