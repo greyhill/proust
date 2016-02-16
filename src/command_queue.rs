@@ -249,8 +249,6 @@ impl CommandQueue {
                               global_size_fixed.1 as size_t,  
                               global_size_fixed.2 as size_t);
 
-        println!("{:?}, {:?}", local_vec, global_vec);
-
         let mut event_id: ll::Event = ptr::null_mut();
         unsafe {
             try!(Error::check(ll::clEnqueueNDRangeKernel(self.id,
