@@ -3,7 +3,6 @@ use error::Error;
 use device::Device;
 
 use std::ptr;
-use std::mem::transmute;
 
 pub struct Context {
     pub id: ll::Context,
@@ -17,10 +16,7 @@ impl Context {
         let user_data = ptr::null(); // TODO ?
         let id = unsafe {
             let mut err: i32 = 0;
-            let props: Vec<usize> = vec!(
-                             0x1084, 
-                             transmute(try!(devices[0].platform()).id));
-            let id = ll::clCreateContext(transmute(&props[0]),
+            let id = ll::clCreateContext(ptr::null_mut(),
                                          num_devices,
                                          &device_ids[0],
                                          callback,
