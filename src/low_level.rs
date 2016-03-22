@@ -52,7 +52,7 @@ extern {
     pub fn clCreateContext(properties: *mut *mut c_void,
                            num_devices: u32,
                            devices: *const DeviceID,
-                           callback: *const extern fn (*mut char, *const c_void, size_t, *const c_void) -> (),
+                           callback: *const extern fn (*mut u8, *const c_void, size_t, *const c_void) -> (),
                            user_data: *const c_void,
                            err_ret: *mut i32) -> Context;
 
