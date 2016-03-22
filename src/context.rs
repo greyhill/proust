@@ -1,8 +1,12 @@
+extern crate libc;
+use self::libc::*;
+
 use low_level as ll;
 use error::Error;
 use device::Device;
 
 use std::ptr;
+use std::mem;
 
 pub struct Context {
     pub id: ll::Context,
@@ -26,6 +30,31 @@ impl Context {
             id
         };
         Ok(Context{id:id})
+    }
+
+    pub fn devices(self: &Self) -> Result<Vec<Device>, Error> {
+        let num_devices = unsafe {
+            let mut tr: size_t = 0;
+            try!(Error::check(ll::clGetContextInfo(self.id,
+                                                   0x1081,
+                                                   0,
+                                                   ptr::null_mut(),
+                                                   &mut tr)));
+            tr as usize / mem::size_of::<ll::DeviceID>()
+        };
+
+        let mut device_ids: Vec<ll::DeviceID> = 
+            (0..num_devices).map(|_| ptr::null_mut()).collect();
+
+        unsafe {
+            try!(Error::check(ll::clGetContextInfo(self.id,
+                                                   0x1081,
+                                                   num_devices * mem::size_of::<ll::DeviceID>(),
+                                                   mem::transmute(&mut device_ids[0]),
+                                                   ptr::null_mut())));
+        }
+
+        Ok(device_ids.iter().map(|&id| Device{id:id}).collect())
     }
 }
 

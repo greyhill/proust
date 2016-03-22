@@ -55,6 +55,11 @@ extern {
                            callback: *const extern fn (*mut u8, *const c_void, size_t, *const c_void) -> (),
                            user_data: *const c_void,
                            err_ret: *mut i32) -> Context;
+    pub fn clGetContextInfo(ctx: Context,
+                            param_name: u32,
+                            param_size: size_t,
+                            param_value: *mut c_void,
+                            size_ret: *mut size_t) -> i32;
 
     pub fn clRetainContext(ctx: Context) -> i32;
 

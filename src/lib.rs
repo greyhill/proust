@@ -19,3 +19,6 @@ pub use self::program::Program;
 pub use self::kernel::Kernel;
 pub use self::mem::Mem;
 
+mod c_api;
+pub use c_api::*;
+

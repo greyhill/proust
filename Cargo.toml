@@ -5,6 +5,7 @@ authors = ["Madison McGaffin <greyhill@gmail.com>"]
 
 [lib]
 name = 'proust'
+crate-type = ["rlib", "dylib"]
 
 [dependencies.libc]
 version = "*"
