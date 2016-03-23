@@ -226,7 +226,7 @@ impl CommandQueue {
     }
 
     fn next_mul(self: &Self, global: usize, local: usize) -> usize {
-        if local % global == 0 {
+        if global % local == 0 {
             global
         } else {
             ((global/local)+1)*local
