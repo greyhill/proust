@@ -137,7 +137,7 @@ extern {
     pub fn clCreateBuffer(ctx: Context,
                           flags: c_ulong,
                           size: size_t,
-                          host_ptr: *mut c_void,
+                          host_ptr: *const c_void,
                           error: *mut i32) -> Mem;
 
     pub fn clEnqueueWriteBuffer(queue: CommandQueue,

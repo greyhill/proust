@@ -40,4 +40,3 @@ def create_context(platform_number = 0):
     tr.create_command_queue = lambda device_number: create_command_queue(tr, device_number)
     return tr
 
-
