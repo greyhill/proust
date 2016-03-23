@@ -194,12 +194,15 @@ impl CommandQueue {
                                size_bytes: usize) -> Result<Mem, Error> {
         let id = try!(self.alloc_ll_buffer(0, size_bytes));
         let mut tr = Mem::new(id);
+
         // one-byte write to place buffer on device and ensure 
         // allocated memory is okay
+        /*
         let _ = try!(self.write_buffer_raw(&mut tr,
                                            0,
                                            1,
                                            &[self]));
+        */
         Ok(tr)
     }
 
