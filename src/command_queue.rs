@@ -126,24 +126,6 @@ impl CommandQueue {
         Ok(id)
     }
 
-    fn alloc_ll_buffer_with_data(self: &Self,
-                                 flags: c_ulong,
-                                 size_bytes: usize,
-                                 data: *const c_void) -> Result<ll::Mem, Error> {
-        let context = try!(self.context());
-        let id = unsafe {
-            let mut err: i32 = 0;
-            let id = ll::clCreateBuffer(context.id,
-                                        flags | (1 << 5),
-                                        size_bytes as size_t,
-                                        data,
-                                        &mut err);
-            try!(Error::check(err));
-            id
-        };
-        Ok(id)
-    }
-
     fn write_buffer_raw<T: Sized>(self: &Self, 
                        buf: &mut Mem,
                        offset: usize,
@@ -218,9 +200,9 @@ impl CommandQueue {
     pub fn create_buffer_from_slice<T: Sized>(self: &Self,
                                     slice: &[T]) -> Result<Mem, Error> {
         let num_bytes = slice.len() * size_of::<T>();
-        let id = try!(self.alloc_ll_buffer_with_data(0, num_bytes, unsafe { transmute(&slice[0]) } ));
-        let tr = Mem::new(id);
-        Ok(tr)
+        let mut buf = try!(self.create_buffer(num_bytes));
+        try!(self.write_buffer(&mut buf, slice));
+        Ok(buf)
     }
 
     pub fn write_buffer<'a, 'b, T: Sized + 'a>(self: &Self,
