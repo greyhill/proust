@@ -271,6 +271,11 @@ impl CommandQueue {
 
         let mut event_id: ll::Event = ptr::null_mut();
         unsafe {
+            let events_val = if events.len() > 0 {
+                transmute(&events[0])
+            } else {
+                ptr::null_mut()
+            };
             try!(Error::check(ll::clEnqueueNDRangeKernel(self.id,
                                                          kernel.id,
                                                          3,
@@ -278,7 +283,7 @@ impl CommandQueue {
                                                          &global_vec[0],
                                                          &local_vec[0],
                                                          events.len() as u32,
-                                                         &events[0],
+                                                         events_val,
                                                          &mut event_id)));
         }
         let event = Event{id: event_id};
