@@ -37,6 +37,8 @@ impl Clone for Kernel {
     }
 }
 
+unsafe impl Send for Kernel { }
+
 impl Kernel {
     pub fn new(id: ll::Kernel) -> Kernel {
         Kernel{
