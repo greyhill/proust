@@ -50,11 +50,13 @@ impl Mem {
 
     pub fn register_read(self: &Self, evt: Event) -> () {
         let mut r = self.events.last_read.borrow_mut();
-        r.retain(|e| 
-                 match e.status().ok().expect("error getting event status") {
-                     EventStatus::Complete => false,
-                     _ => true,
-        });
+        if r.len() > 10 {
+            r.retain(|e| 
+                     match e.status().ok().expect("error getting event status") {
+                         EventStatus::Complete => false,
+                         _ => true,
+            });
+        }
         r.push(evt);
     }
 }
