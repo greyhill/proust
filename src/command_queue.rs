@@ -62,6 +62,8 @@ impl<'a, T: Sized> EventLike for WriteLock<'a, T> {
     }
 }
 
+unsafe impl Send for CommandQueue { }
+
 impl CommandQueue {
     pub fn new(context: Context,
                device: Device) -> Result<CommandQueue, Error> {

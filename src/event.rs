@@ -25,6 +25,8 @@ pub trait EventLike {
     // fn then(self: &Self) -> Result<(), Error>;
 }
 
+unsafe impl Send for Event { }
+
 impl EventStatus {
     pub fn from_code(code: i32) -> EventStatus {
         match code {
