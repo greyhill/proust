@@ -55,6 +55,7 @@ impl Mem {
                      EventStatus::Complete => false,
                      _ => true,
         });
+        println!("buffer {:?} has {} events in its read list", self.id, r.len());
         r.push(evt);
     }
 }
