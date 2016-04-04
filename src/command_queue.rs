@@ -207,6 +207,28 @@ impl CommandQueue {
         Ok(buf)
     }
 
+    pub fn write_buffer_unscoped<T: Sized>(self: &Self,
+                                  mem: &mut Mem,
+                                  slice: &[T]) -> Result<Event, Error> {
+        let size_bytes = size_of::<T>()*slice.len();
+        let evt = try!(self.write_buffer_raw(mem,
+                                             0,
+                                             size_bytes,
+                                             slice));
+        Ok(evt)
+    }
+
+    pub fn read_buffer_unscoped<T: Sized>(self: &Self,
+                                                 mem: &Mem,
+                                                 slice: &mut [T]) -> Result<Event, Error> {
+        let size_bytes = size_of::<T>()*slice.len();
+        let evt = try!(self.read_buffer_raw(mem,
+                                            0,
+                                            size_bytes,
+                                            slice));
+        Ok(evt)
+    }
+
     pub fn write_buffer<'a, 'b, T: Sized + 'a>(self: &Self,
                                   mem: &'b mut Mem,
                                   slice: &'a [T]) -> Result<ReadLock<'a, T>, Error> {
@@ -237,11 +259,47 @@ impl CommandQueue {
         }
     }
 
-    pub fn run( self: &Self, 
+    pub fn run( 
+                self: &Self, 
                 kernel: &mut Kernel, 
                 local_size: (usize, usize, usize),
                 global_size: (usize, usize, usize)) -> Result<Event, Error> {
-        let events = kernel.run_events();
+        let global_size_fixed = (self.next_mul(global_size.0, local_size.0),
+                                self.next_mul(global_size.1, local_size.1),
+                                self.next_mul(global_size.2, local_size.2));
+
+        let local_vec = vec!(local_size.0 as size_t, 
+                             local_size.1 as size_t, 
+                             local_size.2 as size_t);
+        let global_vec = vec!(global_size_fixed.0 as size_t, 
+                              global_size_fixed.1 as size_t,  
+                              global_size_fixed.2 as size_t);
+
+        let mut event_id: ll::Event = ptr::null_mut();
+        unsafe {
+            let events_val = ptr::null_mut();
+            try!(Error::check(ll::clEnqueueNDRangeKernel(self.id,
+                                                         kernel.id,
+                                                         3,
+                                                         ptr::null(),
+                                                         &global_vec[0],
+                                                         &local_vec[0],
+                                                         0,
+                                                         events_val,
+                                                         &mut event_id)));
+        }
+        let event = Event{id: event_id};
+
+        Ok(event)
+    }
+
+
+    pub fn run_with_events( 
+                self: &Self, 
+                kernel: &mut Kernel, 
+                local_size: (usize, usize, usize),
+                global_size: (usize, usize, usize),
+                events: &[Event]) -> Result<Event, Error> {
         let global_size_fixed = (self.next_mul(global_size.0, local_size.0),
                                 self.next_mul(global_size.1, local_size.1),
                                 self.next_mul(global_size.2, local_size.2));
@@ -272,7 +330,6 @@ impl CommandQueue {
         }
         let event = Event{id: event_id};
 
-        try!(kernel.register_run(event.clone()));
         Ok(event)
     }
 }
