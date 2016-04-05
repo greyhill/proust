@@ -135,13 +135,6 @@ impl CommandQueue {
                        data: &[T]) -> Result<Event, Error> {
         let mut event_id: ll::Event = ptr::null_mut();
         let host_ptr = &data[0] as *const T;
-        let wait_list: Vec<ll::Event> = buf.write_events();
-        let wait_size = wait_list.len() as u32;
-
-        let wait_list_ptr: *const ll::Event = match wait_size {
-            0 => ptr::null(),
-            _ => &wait_list[0],
-        };
 
         unsafe {
             try!(Error::check(ll::clEnqueueWriteBuffer(self.id,
@@ -150,13 +143,12 @@ impl CommandQueue {
                                                        offset as size_t,
                                                        size as size_t,
                                                        transmute(host_ptr),
-                                                       wait_size,
-                                                       wait_list_ptr,
+                                                       0,
+                                                       ptr::null(),
                                                        &mut event_id)));
         }
 
         let event = Event{id: event_id};
-        buf.register_write(event.clone());
         Ok(event)
     }
 
@@ -167,13 +159,6 @@ impl CommandQueue {
                                  data: &mut [T]) -> Result<Event, Error> {
         let mut event_id: ll::Event = ptr::null_mut();
         let host_ptr = &mut data[0] as *mut T;
-        let wait_list: Vec<ll::Event> = buf.read_events();
-        let wait_size = wait_list.len() as u32;
-
-        let wait_list_ptr: *const ll::Event = match wait_size {
-            0 => ptr::null(),
-            _ => &wait_list[0],
-        };
 
         unsafe {
             try!(Error::check(ll::clEnqueueReadBuffer(self.id,
@@ -182,13 +167,12 @@ impl CommandQueue {
                                                       offset as size_t,
                                                       size as size_t,
                                                       transmute(host_ptr),
-                                                      wait_size,
-                                                      wait_list_ptr,
+                                                      0,
+                                                      ptr::null(),
                                                       &mut event_id)));
         }
 
         let event = Event{id: event_id};
-        buf.register_read(event.clone());
         Ok(event)
     }
 
