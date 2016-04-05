@@ -284,7 +284,7 @@ impl CommandQueue {
                 local_size: (usize, usize, usize),
                 global_size: (usize, usize, usize),
                 events_in: &[Event]) -> Result<Event, Error> {
-        let events = events_in.to_owned();
+        let events: Vec<ll::Event> = events_in.iter().map(|e| e.id).collect();
         let global_size_fixed = (self.next_mul(global_size.0, local_size.0),
                                 self.next_mul(global_size.1, local_size.1),
                                 self.next_mul(global_size.2, local_size.2));
