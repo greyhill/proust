@@ -5,6 +5,7 @@ use low_level as ll;
 use error::Error;
 use mem::Mem;
 
+use std::ptr;
 use std::mem::{transmute, size_of};
 
 pub struct Kernel {
@@ -39,6 +40,13 @@ impl Kernel {
         Kernel{
             id: id,
         }
+    }
+
+    pub fn bind_null(self: &mut Self, index: u32) -> Result<(), Error> {
+        unsafe {
+            try!(Error::check(ll::clSetKernelArg(self.id, index, size_of::<ll::Mem>() as size_t, ptr::null_mut())));
+        }
+        Ok(())
     }
 
     pub fn bind_scalar<T: Sized>(self: &mut Self, index: u32, val: &T) -> Result<(), Error> {
