@@ -9,6 +9,10 @@ use std::iter::repeat;
 use std::ptr;
 use std::mem::transmute;
 
+/// OpenCL platform
+///
+/// Get a list of OpenCL platforms with `Platform::platforms()`, then query
+/// devices with `devices()`.
 pub struct Platform {
     pub id: ll::PlatformID,
 }
@@ -22,6 +26,7 @@ impl Clone for Platform {
 unsafe impl Send for Platform { }
 
 impl Platform {
+    /// Returns a vector of available platforms
     pub fn platforms() -> Result<Vec<Platform>, Error> {
         let num_platforms = unsafe {
             let mut tr: u32 = 0;
@@ -86,6 +91,7 @@ impl Platform {
         self.get_info(0x0904)
     }
 
+    /// Returns a vector of devices on this platform
     pub fn devices(self: &Self) -> Result<Vec<Device>, Error> {
         let num_devices: usize = unsafe {
             let mut tr: c_uint = 0;

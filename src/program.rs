@@ -12,10 +12,18 @@ use std::ptr;
 use std::iter::repeat;
 use std::ffi::CString;
 
+/// Uncompiled OpenCL program
+///
+/// To produce a compiled OpenCL program, use `Program::new_from_source()`,
+/// then call `build()`.
 pub struct Program {
     pub id: ll::Program,
 }
 
+/// Compiled OpenCL program
+///
+/// To produce a compiled OpenCL program, use `Program::new_from_source()`,
+/// then call `build()`.
 pub struct BuiltProgram {
     pub id: ll::Program,
 }
@@ -107,6 +115,7 @@ impl Clone for Program {
 }
 
 impl BuiltProgram {
+    /// Returns the build log from the OpenCL compiler
     pub fn log(self: &Self, 
                device: Device) -> Result<String, Error> {
         let size_req = unsafe {
@@ -131,6 +140,7 @@ impl BuiltProgram {
         Ok(String::from_utf8(buf).ok().expect("CL returned invalid string"))
     }
 
+    /// Create an OpenCL kernel
     pub fn create_kernel<T: AsRef<str>>(self: &Self,
                                         name: T) -> Result<Kernel, Error> {
         let mut err: i32 = 0;

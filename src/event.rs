@@ -7,10 +7,12 @@ use error::Error;
 use std::ptr;
 use std::mem::{size_of, transmute};
 
+/// OpenCL event
 pub struct Event {
     pub id: ll::Event,
 }
 
+/// OpenCL event status
 pub enum EventStatus {
     Queued,
     Submitted,

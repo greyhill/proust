@@ -12,6 +12,7 @@ use mem::Mem;
 use std::ptr;
 use std::mem::{size_of, transmute};
 
+/// An OpenCL command queue
 pub struct CommandQueue {
     pub id: ll::CommandQueue,
 }
@@ -176,6 +177,7 @@ impl CommandQueue {
         Ok(event)
     }
 
+    /// Create a memory buffer of the given size
     pub fn create_buffer(self: &Self, 
                                size_bytes: usize) -> Result<Mem, Error> {
         let id = try!(self.alloc_ll_buffer(0, size_bytes));
@@ -183,6 +185,7 @@ impl CommandQueue {
         Ok(tr)
     }
 
+    /// Create a memory buffer from a slice of sized objects
     pub fn create_buffer_from_slice<T: Sized>(self: &Self,
                                     slice: &[T]) -> Result<Mem, Error> {
         let num_bytes = slice.len() * size_of::<T>();
@@ -191,6 +194,7 @@ impl CommandQueue {
         Ok(buf)
     }
 
+    /// Write a slice to the given buffer and does not wait for it to finish
     pub fn write_buffer_unscoped<T: Sized>(self: &Self,
                                   mem: &mut Mem,
                                   slice: &[T]) -> Result<Event, Error> {
@@ -202,6 +206,7 @@ impl CommandQueue {
         Ok(evt)
     }
 
+    /// Reads from the given buffer to a slice and does not wait for it to finish
     pub fn read_buffer_unscoped<T: Sized>(self: &Self,
                                                  mem: &Mem,
                                                  slice: &mut [T]) -> Result<Event, Error> {
@@ -213,6 +218,7 @@ impl CommandQueue {
         Ok(evt)
     }
 
+    /// Writes from a given slice to a buffer and returns a lock to wait until it finishes
     pub fn write_buffer<'a, 'b, T: Sized + 'a>(self: &Self,
                                   mem: &'b mut Mem,
                                   slice: &'a [T]) -> Result<ReadLock<'a, T>, Error> {
@@ -224,6 +230,7 @@ impl CommandQueue {
         Ok(ReadLock{ evt: evt, sl: slice })
     }
 
+    /// Reads from a buffer to a slice and returns a lock to wait until the operation finishes
     pub fn read_buffer<'a, T: Sized>(self: &Self,
                                  mem: &Mem,
                                  slice: &'a mut [T]) -> Result<WriteLock<'a, T>, Error> {
@@ -243,6 +250,7 @@ impl CommandQueue {
         }
     }
 
+    /// Enqueues a kernel
     pub fn run( 
                 self: &Self, 
                 kernel: &mut Kernel, 
@@ -277,7 +285,7 @@ impl CommandQueue {
         Ok(event)
     }
 
-
+    /// Enqueues a kernel after the given events
     pub fn run_with_events( 
                 self: &Self, 
                 kernel: &mut Kernel, 

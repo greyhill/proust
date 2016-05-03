@@ -8,6 +8,15 @@ use device::Device;
 use std::ptr;
 use std::mem;
 
+/// OpenCL context
+///
+/// To create a new context:
+///
+/// 1. Get a list of platforms with `Platform::platforms()` and select one.
+///
+/// 2. Get a list of devices from the selected platform with `.devices()`
+///
+/// 3. Pass the list of devices to `Context::new()`.
 pub struct Context {
     pub id: ll::Context,
 }

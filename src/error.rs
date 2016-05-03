@@ -1,3 +1,4 @@
+/// OpenCL error types
 #[derive(Debug)]
 pub enum Error {
     DeviceNotFound,

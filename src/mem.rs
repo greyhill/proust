@@ -1,6 +1,7 @@
 use low_level as ll;
 use error::Error;
 
+/// OpenCL memory object
 pub struct Mem {
     pub id: ll::Mem,
 }
