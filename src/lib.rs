@@ -11,7 +11,7 @@ mod mem;
 
 pub use self::error::Error;
 pub use self::platform::Platform;
-pub use self::device::Device;
+pub use self::device::{Device, DeviceType};
 pub use self::context::Context;
 pub use self::command_queue::CommandQueue;
 pub use self::event::{Event, EventStatus, EventLike};
