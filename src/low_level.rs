@@ -169,5 +169,25 @@ extern {
                                   num_events: u32,
                                   events: *const Event,
                                   event: *mut Event) -> i32;
+
+    pub fn clEnqueueCopyImageToBuffer(queue: CommandQueue,
+                                      src_image: Mem,
+                                      dst_buffer: Mem,
+                                      src_origin: *const size_t,
+                                      src_region: *const size_t,
+                                      dst_offset: size_t,
+                                      num_events_in_wait_list: u32,
+                                      event_wait_list: *const Event,
+                                      event: *mut Event) -> i32;
+
+    pub fn clEnqueueCopyBufferToImage(queue: CommandQueue,
+                                      src_buffer: Mem,
+                                      dst_image: Mem,
+                                      src_offset: size_t,
+                                      dst_origin: *const size_t,
+                                      dst_region: *const size_t,
+                                      num_events_in_wait_list: u32,
+                                      event_wait_list: *const Event,
+                                      event: *mut Event) -> i32;
 }
 

@@ -218,6 +218,84 @@ impl CommandQueue {
         Ok(evt)
     }
 
+    /// Begin a copy from a buffer to an image
+    pub fn copy_buffer_to_image(self: &Self,
+                                source: &Mem,
+                                destination: &mut Mem,
+                                origin: (usize, usize, usize),
+                                region: (usize, usize, usize),
+                                wait_for: &[Event]) -> Result<Event, Error> {
+        let mut event_id: ll::Event = ptr::null_mut();
+        let origin_vec = [origin.0, origin.1, origin.2];
+        let region_vec = [region.0, region.1, region.2];
+
+        let events: Vec<ll::Event> = wait_for.iter().map(|e| e.id).collect();
+        let events_ptr: *const ll::Event = if events.len() > 0 {
+            &events[0]
+        } else {
+            ptr::null()
+        };
+
+        let origin_ptr: *const size_t = &origin_vec[0];
+        let region_ptr: *const size_t = &region_vec[0];
+
+        unsafe {
+            try!(Error::check(ll::clEnqueueCopyBufferToImage(
+                        self.id,
+                        source.id,
+                        destination.id,
+                        0usize,
+                        origin_ptr,
+                        region_ptr,
+                        events.len() as u32,
+                        events_ptr,
+                        &mut event_id)));
+        }
+
+        Ok(Event{
+            id: event_id
+        })
+    }
+
+    /// Begin a copy from an image to a buffer
+    pub fn copy_image_to_buffer(self: &Self,
+                                source: &Mem,
+                                destination: &mut Mem,
+                                origin: (usize, usize, usize),
+                                region: (usize, usize, usize),
+                                wait_for: &[Event]) -> Result<Event, Error> {
+        let mut event_id: ll::Event = ptr::null_mut();
+        let origin_vec = [origin.0, origin.1, origin.2];
+        let region_vec = [region.0, region.1, region.2];
+
+        let events: Vec<ll::Event> = wait_for.iter().map(|e| e.id).collect();
+        let events_ptr: *const ll::Event = if events.len() > 0 {
+            &events[0]
+        } else {
+            ptr::null()
+        };
+
+        let origin_ptr: *const size_t = &origin_vec[0];
+        let region_ptr: *const size_t = &region_vec[0];
+
+        unsafe {
+            try!(Error::check(ll::clEnqueueCopyImageToBuffer(
+                        self.id,
+                        source.id,
+                        destination.id,
+                        origin_ptr,
+                        region_ptr,
+                        0usize,
+                        events.len() as u32,
+                        events_ptr,
+                        &mut event_id)));
+        }
+
+        Ok(Event{
+            id: event_id
+        })
+    }
+
     /// Writes from a given slice to a buffer and returns a lock to wait until it finishes
     pub fn write_buffer<'a, 'b, T: Sized + 'a>(self: &Self,
                                   mem: &'b mut Mem,
