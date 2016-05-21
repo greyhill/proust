@@ -102,7 +102,7 @@ impl Device {
         let b = try!(self.get_info(0x1005));
         let p0: *const u8 = &b[0];
         let tr: Vec<usize> = unsafe {
-            let sl = slice::from_raw_parts(transmute(p0), 
+            let sl = slice::from_raw_parts(transmute(p0),
                                            b.len() / size_of::<usize>());
             sl.to_vec()
         };
@@ -231,7 +231,7 @@ impl Device {
     }
 
     pub fn out_of_order_supported(self: &Self) -> Result<bool, Error> {
-        let v: c_ulong = try!(self.get_info_scalar(0x102A));
+        let v: u64 = try!(self.get_info_scalar(0x102A));
         let r: u64 = v as u64 & 1u64;
         Ok(r > 0)
     }
@@ -265,4 +265,3 @@ impl Device {
         Ok(Platform{id:id})
     }
 }
-

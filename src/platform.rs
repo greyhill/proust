@@ -38,7 +38,7 @@ impl Platform {
             .take(num_platforms as usize).collect();
 
         unsafe {
-            try!(Error::check(ll::clGetPlatformIDs(num_platforms, 
+            try!(Error::check(ll::clGetPlatformIDs(num_platforms,
                                                    &mut ids[0],
                                                    ptr::null_mut())))
         };
@@ -95,7 +95,7 @@ impl Platform {
     pub fn devices(self: &Self) -> Result<Vec<Device>, Error> {
         let num_devices: usize = unsafe {
             let mut tr: c_uint = 0;
-            try!(Error::check(ll::clGetDeviceIDs(self.id, 
+            try!(Error::check(ll::clGetDeviceIDs(self.id,
                                                  0xFFFFFFFF, // all types
                                                  0,
                                                  ptr::null_mut(),
@@ -117,4 +117,3 @@ impl Platform {
         Ok(device_ids.iter().map(|&id| Device{id:id}).collect())
     }
 }
-
